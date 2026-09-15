@@ -74,3 +74,16 @@ Solo disponible si `quote_status = approved`. Inicia el checkout de Mercado Pago
 Confirmación de pago vía el mismo webhook de `pedidos.md` (`POST /api/payments/webhook/mercadopago`), que al aprobar genera la `Invoice` de servicio (ver `facturas.md`, HU-05.2).
 
 Errores: `409` si la cotización no está aprobada.
+
+## POST /api/admin/service-orders/:id/pay-in-person
+**Rol:** admin. Agregado en Fase 3 (no en el alcance original de HU-03.7) — ver
+`docs/ADR/0004-pago-en-linea-de-servicios-de-taller.md`, sección "Refinamiento".
+
+Registra un pago recibido presencialmente en el taller (efectivo/datáfono
+físico), para los clientes que pagan al recoger la moto en vez de en línea.
+Solo disponible si `quote_status = approved`. Crea un `Payment` con
+`provider: "cash"` y `status: "approved"` directamente (no pasa por Mercado
+Pago ni por el webhook), y genera la `Invoice` simulada igual que un pago
+online aprobado. Response `201`.
+
+Errores: `409` si la cotización no está aprobada o si la orden ya tiene un pago aprobado.

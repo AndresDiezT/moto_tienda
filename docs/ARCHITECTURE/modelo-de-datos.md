@@ -147,7 +147,7 @@ Puede haber varios intentos de pago por `Order`/`ServiceOrder` (reintentos tras 
 | Campo | Tipo | Notas |
 |---|---|---|
 | id | UUID | PK |
-| provider | enum(`mercadopago`) | modo sandbox en esta fase (HU-02.5, HU-03.7) |
+| provider | enum(`mercadopago`, `cash`) | `mercadopago` en modo sandbox (HU-02.5, HU-03.7); `cash` = pago presencial en el taller registrado a mano por el admin (Fase 3, refinamiento de ADR-0004) |
 | external_reference | string | id de pago en Mercado Pago |
 | status | enum(`pending`, `approved`, `rejected`, `cancelled`) | |
 | amount | decimal | |
@@ -163,7 +163,7 @@ Factura simulada (HU-05.1, HU-05.2, HU-05.3).
 | id | UUID | PK |
 | payment_id | UUID | FK → Payment, único (1 factura por pago aprobado) |
 | number | string | consecutivo único |
-| series | enum(`store`, `service`) | permite series separadas si se requiere (a confirmar) |
+| series | enum(`store`, `service`) | consecutivo independiente por serie (decidido en Fase 3): `FT-000001...` para tienda, `FS-000001...` para servicio |
 | provider | string | `"simulado"` en esta fase; nombre del proveedor DIAN real en fase futura |
 | cufe | string | nullable, solo aplica con proveedor DIAN real |
 | pdf_url | string | |
@@ -181,5 +181,5 @@ Factura simulada (HU-05.1, HU-05.2, HU-05.3).
 7. Los endpoints de cotización (cargar/aprobar/rechazar) y de pago generan también un `ServiceOrderEvent`, no solo `POST /api/service-orders/:id/events` — así el timeline (HU-03.4) queda completo (ver `docs/CONTRACTS-API/ordenes-servicio.md`).
 
 ## Pendiente de definir
-- ¿`Invoice.series` separa numeración de tienda vs. servicio, o comparten un solo consecutivo? (ver nota en HU-05.2).
+Ninguno por ahora — la única pregunta abierta que quedaba (numeración de `Invoice.series`) se resolvió en Fase 3: series separadas por consecutivo.
 - Proveedor de almacenamiento de archivos (Supabase Storage vs. Cloudinary) para las imágenes de producto y fotos de servicio (ver `docs/CONTRACTS-API/archivos.md`).

@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MiMotoTienda
 
-## Getting Started
+Demo de e-commerce + portal de seguimiento de vehículos para un taller de
+motos en Bogotá. **Es una demo para mostrarle a un cliente potencial**, no
+producción real — ver `docs/01-requerimientos-y-arquitectura.md` sección 0
+(pagos en sandbox de Mercado Pago, facturación DIAN simulada, envíos
+simulados).
 
-First, run the development server:
+Toda la definición de producto, arquitectura y plan de trabajo vive en
+`docs/`. Empezar por ahí, en el orden indicado en `docs/README.md` si existe,
+o: `01-requerimientos-y-arquitectura.md` → `ADR/` → `ARCHITECTURE/` →
+`PRODUCT/` → `CONTRACTS-API/` → `PLAN/plan-de-trabajo.md`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next.js (App Router) + TypeScript full-stack, Prisma ORM 7 (driver adapter
+`@prisma/adapter-pg`) sobre PostgreSQL, Supabase (base de datos administrada
++ Storage de archivos), Auth.js (Fase 1), Mercado Pago sandbox (Fase 3/4).
+Ver `docs/ADR/0001-stack-tecnico.md`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Desarrollo local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Copiar `.env.example` a `.env` y completar con las credenciales del
+   proyecto de Supabase (ver sección siguiente).
+2. Instalar dependencias: `npm install`.
+3. Generar el cliente de Prisma: `npx prisma generate` (ya corrido en el
+   repo, solo hace falta si cambia `prisma/schema.prisma`).
+4. Aplicar el schema a la base de datos: `npx prisma migrate dev`.
+5. Levantar el servidor: `npm run dev` → [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Variables de entorno
 
-To learn more about Next.js, take a look at the following resources:
+Ver `.env.example` para la lista completa y comentada. Resumen:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Para qué | Dónde se usa |
+|---|---|---|
+| `DATABASE_URL` | Conexión pooled (pgbouncer, puerto 6543) | Runtime de la app — `src/lib/prisma.ts` |
+| `DIRECT_URL` | Conexión directa (puerto 5432) | Solo la Prisma CLI (`migrate`, `studio`) — `prisma.config.ts` |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto de Supabase | Cliente de Storage — `src/lib/supabase.ts` |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable key (pública, reemplaza a la antigua `anon`) | Reservada para Fase 1 (Auth) |
+| `SUPABASE_SECRET_KEY` | Secret key (solo servidor, reemplaza a la antigua `service_role`) | Cliente de Storage — `src/lib/supabase.ts` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Las credenciales de Mercado Pago y Auth.js se agregan en las fases que las
+necesitan (ver `docs/PLAN/plan-de-trabajo.md`).
 
-## Deploy on Vercel
+## Despliegue
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **App:** Vercel. Conectar el repositorio y configurar las mismas variables
+  de entorno de la tabla anterior en el proyecto de Vercel (Settings →
+  Environment Variables). No requiere `vercel.json`: Next.js se detecta
+  automáticamente.
+- **Base de datos y storage de archivos:** Supabase (un solo proyecto cubre
+  ambos). Crear el proyecto, copiar la connection string pooled y la directa
+  desde Project Settings → Database, y crear un bucket público llamado
+  `uploads` en Storage (usado por `src/lib/storage.ts`, ver
+  `docs/CONTRACTS-API/archivos.md`).
+- Antes del primer deploy con datos reales, correr las migraciones contra la
+  base de datos de Supabase: `npx prisma migrate deploy`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Estructura relevante
+
+- `docs/` — documentación de producto/arquitectura (fuente de verdad).
+- `prisma/schema.prisma` — modelo de datos (ver `docs/ARCHITECTURE/modelo-de-datos.md`).
+- `src/lib/` — clientes compartidos (`prisma.ts`, `supabase.ts`, `storage.ts`, `cn.ts`).
+- `src/components/ui/` — componentes UI base; inventario y tokens de diseño
+  documentados en `.claude/skills/mimototienda-ui-kit/SKILL.md`.
