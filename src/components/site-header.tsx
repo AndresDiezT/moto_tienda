@@ -10,7 +10,7 @@ export async function SiteHeader() {
 
   return (
     <header className="border-b border-border">
-      <Container className="flex h-16 items-center justify-between">
+      <Container className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
         <div className="flex items-center gap-6">
           <Link href="/" className="font-semibold">
             MiMotoTienda
@@ -19,7 +19,7 @@ export async function SiteHeader() {
             Tienda
           </Link>
         </div>
-        <nav className="flex items-center gap-3 text-sm">
+        <nav className="flex flex-wrap items-center gap-3 text-sm">
           <CartLink />
           {session ? (
             <Link

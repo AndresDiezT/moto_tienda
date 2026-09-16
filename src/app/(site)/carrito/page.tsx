@@ -32,7 +32,7 @@ export default function CartPage() {
         <Card>
           <CardContent className="flex flex-col divide-y divide-border pt-6">
             {items.map((item) => (
-              <div key={item.productId} className="flex items-center gap-4 py-4">
+              <div key={item.productId} className="flex flex-wrap items-center gap-4 py-4">
                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
                   {item.image && (
                     <Image

@@ -49,7 +49,7 @@ function ProductRow({
 
   return (
     <li className="flex flex-col gap-2 py-3">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm font-medium">{product.name}</p>
           <p className="text-sm text-muted-foreground">
@@ -57,7 +57,7 @@ function ProductRow({
             {product.stock}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Badge variant={product.active ? "success" : "default"}>
             {product.active ? "Activo" : "Inactivo"}
           </Badge>

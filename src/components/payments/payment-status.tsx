@@ -33,7 +33,7 @@ export function PaymentStatus({ payments }: { payments: PaymentWithInvoice[] }) 
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {payments.map((payment) => (
-          <div key={payment.id} className="flex items-center justify-between gap-3 text-sm">
+          <div key={payment.id} className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <span>
               ${Number(payment.amount).toLocaleString("es-CO")} COP —{" "}
               {PAYMENT_PROVIDER_LABELS[payment.provider] ?? payment.provider} —{" "}

@@ -15,8 +15,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   return (
     <div className="flex flex-1 flex-col">
       <header className="border-b border-border">
-        <Container className="flex h-14 items-center justify-between">
-          <nav className="flex items-center gap-4 text-sm">
+        <Container className="flex min-h-14 flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
+          <nav className="flex flex-wrap items-center gap-4 text-sm">
             {isAdmin ? (
               <Link href="/panel" className="font-medium">
                 Panel del taller
