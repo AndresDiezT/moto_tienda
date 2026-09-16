@@ -31,6 +31,9 @@ export default async function AccountPage() {
             <Link href="/cuenta/direcciones" className={buttonVariants({ variant: "outline" })}>
               Mis direcciones
             </Link>
+            <Link href="/cuenta/facturas" className={buttonVariants({ variant: "outline" })}>
+              Mis facturas
+            </Link>
             <LogoutButton />
           </CardContent>
         </Card>

@@ -6,7 +6,7 @@ import type { Role } from "@/generated/prisma/enums";
 export function landingPathForRole(role: Role): string {
   switch (role) {
     case "admin":
-      return "/panel/mecanicos";
+      return "/panel";
     case "mechanic":
       return "/panel/ordenes";
     case "customer":
